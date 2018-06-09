@@ -2,6 +2,7 @@ import React from 'react';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
 import ReactDOM from 'react-dom';
+import 'semantic-ui-css';
 import Routes from './routes';
 import registerServiceWorker from './registerServiceWorker';
 
@@ -11,7 +12,7 @@ const client = new ApolloClient({
 
 const App = (
   <ApolloProvider client={client}>
-    <Routes />;
+    <Routes />
   </ApolloProvider>
 );
 
