@@ -1,27 +1,19 @@
 import React from 'react';
 import ApolloClient from 'apollo-boost';
-import gql from 'graphql-tag';
+import { ApolloProvider } from 'react-apollo';
 import ReactDOM from 'react-dom';
 import Routes from './routes';
 import registerServiceWorker from './registerServiceWorker';
 
 const client = new ApolloClient({
-    uri: 'http://localhost:8080/graphql',
+  uri: 'http://localhost:8080/graphql',
 });
 
-client
-    .query({
-        query: gql`
-            {
-                allUsers {
-                    id
-                }
-            }
-        `,
-    })
-    .then((result) => console.log(result));
-
-const App = <Routes />;
+const App = (
+  <ApolloProvider client={client}>
+    <Routes />;
+  </ApolloProvider>
+);
 
 ReactDOM.render(App, document.getElementById('root'));
 registerServiceWorker();
