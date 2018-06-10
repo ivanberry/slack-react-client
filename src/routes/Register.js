@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import { Form, Button, Container, Header } from 'semantic-ui-react';
+import { Form, Button, Container, Header, Message } from 'semantic-ui-react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
 class Register extends Component {
   state = {
     username: '',
+    usernameError: '',
     email: '',
+    emailError: '',
     password: '',
+    passwordError: '',
   };
 
   onChange = (e) => {
@@ -15,10 +18,37 @@ class Register extends Component {
     this.setState({ [name]: value });
   };
 
-  onSubmit = (e) => this.props.mutate({ variables: this.state });
+  onSubmit = async () => {
+    const response = await this.props.mutate({ variables: this.state });
+    const { ok, errors } = response.data.register;
+    if (ok) {
+      this.props.history.push('/');
+    } else {
+      const err = {};
+      errors.forEach(({ path, message }) => {
+        err[`${path}Error`] = message;
+      });
+      this.setState(err);
+    }
+  };
 
   render() {
     const { onChange, onSubmit, state } = this;
+
+    const { usernameError, passwordError, emailError } = state;
+
+    // TODO: maybe there is better way to handle erros
+    const errorsList = [];
+    if (usernameError) {
+      errorsList.push(usernameError);
+    }
+    if (emailError) {
+      errorsList.push(emailError);
+    }
+    if (passwordError) {
+      errorsList.push(passwordError);
+    }
+
     return (
       <Container fluid>
         <Header>Register Page</Header>
@@ -58,6 +88,13 @@ class Register extends Component {
           </Form.Field>
           <Button primary>Register</Button>
         </Form>
+        {!!usernameError || !!passwordError || !!emailError ? (
+          <Message
+            error
+            header="There was some errors with your submission"
+            list={errorsList}
+          />
+        ) : null}
       </Container>
     );
   }
@@ -65,7 +102,13 @@ class Register extends Component {
 
 const registerMutaion = gql`
   mutation($username: String!, $email: String!, $password: String!) {
-    register(username: $username, email: $email, password: $password)
+    register(username: $username, email: $email, password: $password) {
+      ok
+      errors {
+        path
+        message
+      }
+    }
   }
 `;
 
