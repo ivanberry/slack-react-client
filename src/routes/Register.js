@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { Form, Button, Container, Header } from 'semantic-ui-react';
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
 
 class Register extends Component {
   state = {
-    name: '',
+    username: '',
     email: '',
     password: '',
   };
@@ -13,9 +15,7 @@ class Register extends Component {
     this.setState({ [name]: value });
   };
 
-  onSubmit = (e) => {
-    console.log(this.state);
-  };
+  onSubmit = (e) => this.props.mutate({ variables: this.state });
 
   render() {
     const { onChange, onSubmit, state } = this;
@@ -24,14 +24,14 @@ class Register extends Component {
         <Header>Register Page</Header>
         <Form onSubmit={onSubmit}>
           <Form.Field>
-            <label htmlFor="name">Username</label>
+            <label htmlFor="username">Username</label>
             <input
               id="name"
               type="text"
               placeholder="username"
               onChange={onChange}
               value={state.user}
-              name="name"
+              name="username"
             />
           </Form.Field>
           <Form.Field>
@@ -51,7 +51,7 @@ class Register extends Component {
               id="password"
               type="password"
               value={state.password}
-              placeholder="username"
+              placeholder="password"
               onChange={onChange}
               name="password"
             />
@@ -63,4 +63,10 @@ class Register extends Component {
   }
 }
 
-export default Register;
+const registerMutaion = gql`
+  mutation($username: String!, $email: String!, $password: String!) {
+    register(username: $username, email: $email, password: $password)
+  }
+`;
+
+export default graphql(registerMutaion)(Register);

@@ -10,11 +10,11 @@ const client = new ApolloClient({
   uri: 'http://localhost:8080/graphql',
 });
 
-const App = (
+const App = () => (
   <ApolloProvider client={client}>
     <Routes />
   </ApolloProvider>
 );
 
-ReactDOM.render(App, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));
 registerServiceWorker();
