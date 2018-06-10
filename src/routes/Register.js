@@ -43,7 +43,6 @@ class Register extends Component {
       errors.forEach(({ path, message }) => {
         err[`${path}Error`] = message;
       });
-      console.log(err);
       this.setState(err);
     }
   };
