@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { Form, Button, Container, Header, Message } from 'semantic-ui-react';
+import {
+  Form,
+  Button,
+  Container,
+  Header,
+  Message,
+  Input,
+} from 'semantic-ui-react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
@@ -19,7 +26,15 @@ class Register extends Component {
   };
 
   onSubmit = async () => {
-    const response = await this.props.mutate({ variables: this.state });
+    const { username, password, email } = this.state;
+    this.setState({
+      usernameError: '',
+      emailError: '',
+      passwordError: '',
+    });
+    const response = await this.props.mutate({
+      variables: { username, email, password },
+    });
     const { ok, errors } = response.data.register;
     if (ok) {
       this.props.history.push('/');
@@ -28,6 +43,7 @@ class Register extends Component {
       errors.forEach(({ path, message }) => {
         err[`${path}Error`] = message;
       });
+      console.log(err);
       this.setState(err);
     }
   };
@@ -55,7 +71,8 @@ class Register extends Component {
         <Form onSubmit={onSubmit}>
           <Form.Field>
             <label htmlFor="username">Username</label>
-            <input
+            <Input
+              error={!!usernameError}
               id="name"
               type="text"
               placeholder="username"
@@ -66,7 +83,8 @@ class Register extends Component {
           </Form.Field>
           <Form.Field>
             <label htmlFor="email">Email</label>
-            <input
+            <Input
+              error={!!emailError}
               id="email"
               type="text"
               value={state.email}
@@ -77,7 +95,8 @@ class Register extends Component {
           </Form.Field>
           <Form.Field>
             <label htmlFor="password">Password</label>
-            <input
+            <Input
+              error={!!passwordError}
               id="password"
               type="password"
               value={state.password}
