@@ -73,7 +73,7 @@ class Register extends Component {
             <label htmlFor="username">Username</label>
             <Input
               error={!!usernameError}
-              id="name"
+              id="username"
               type="text"
               placeholder="username"
               onChange={onChange}
