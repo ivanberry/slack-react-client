@@ -96,7 +96,7 @@ class Login extends Component {
           </Form.Field>
           <Button primary>Login</Button>
         </Form>
-        {!1 ? (
+        {errorsList.length ? (
           <Message
             error
             header="There was some errors with your submission"
