@@ -7,6 +7,7 @@ import {
   Message,
   Input,
 } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
@@ -68,10 +69,9 @@ class Register extends Component {
       <Container fluid>
         <Header>Register Page</Header>
         <Form onSubmit={onSubmit}>
-          <Form.Field>
+          <Form.Field error={!!usernameError}>
             <label htmlFor="username">Username</label>
             <Input
-              error={!!usernameError}
               id="username"
               type="text"
               placeholder="username"
@@ -80,10 +80,9 @@ class Register extends Component {
               name="username"
             />
           </Form.Field>
-          <Form.Field>
+          <Form.Field error={!!emailError}>
             <label htmlFor="email">Email</label>
             <Input
-              error={!!emailError}
               id="email"
               type="text"
               value={state.email}
@@ -92,10 +91,9 @@ class Register extends Component {
               name="email"
             />
           </Form.Field>
-          <Form.Field>
+          <Form.Field error={!!passwordError}>
             <label htmlFor="password">Password</label>
             <Input
-              error={!!passwordError}
               id="password"
               type="password"
               value={state.password}
@@ -106,7 +104,7 @@ class Register extends Component {
           </Form.Field>
           <Button primary>Register</Button>
         </Form>
-        {!!usernameError || !!passwordError || !!emailError ? (
+        {errorsList.length ? (
           <Message
             error
             header="There was some errors with your submission"
@@ -129,5 +127,12 @@ const registerMutaion = gql`
     }
   }
 `;
+
+Register.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  mutate: PropTypes.func.isRequired,
+};
 
 export default graphql(registerMutaion)(Register);

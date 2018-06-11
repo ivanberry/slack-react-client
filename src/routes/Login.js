@@ -8,6 +8,7 @@ import {
   Input,
 } from 'semantic-ui-react';
 import { extendObservable } from 'mobx';
+import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -18,6 +19,7 @@ class Login extends Component {
     extendObservable(this, {
       email: '',
       password: '',
+      errors: {},
     });
   }
 
@@ -26,6 +28,20 @@ class Login extends Component {
     const response = await this.props.mutate({
       variables: { email, password },
     });
+
+    const { ok, token, refreshToken, errors } = response.data.login;
+
+    if (ok) {
+      localStorage.setItem('token', token);
+      localStorage.setItem('refreshToken', refreshToken);
+      this.props.history.push('/');
+    } else {
+      const err = {};
+      errors.forEach(({ path, message }) => {
+        err[`${path}Error`] = message;
+      });
+      this.errors = err;
+    }
   };
 
   onChange = (e) => {
@@ -34,15 +50,30 @@ class Login extends Component {
   };
 
   render() {
-    const { email, password, onSubmit, onChange } = this;
+    const {
+      email,
+      password,
+      onSubmit,
+      onChange,
+      errors: { emailError, passwordError },
+    } = this;
+
+    const errorsList = [];
+    if (emailError) {
+      errorsList.push(emailError);
+    }
+
+    if (passwordError) {
+      errorsList.push(passwordError);
+    }
+
     return (
       <Container fluid>
         <Header as="h2">Login</Header>
         <Form onSubmit={onSubmit}>
-          <Form.Field>
+          <Form.Field error={!!emailError}>
             <label htmlFor="email">Email</label>
             <Input
-              // error={!!emailError}
               id="email"
               type="text"
               value={email}
@@ -51,7 +82,7 @@ class Login extends Component {
               name="email"
             />
           </Form.Field>
-          <Form.Field>
+          <Form.Field error={!!passwordError}>
             <label htmlFor="password">Password</label>
             <Input
               // error={!!passwordError}
@@ -65,17 +96,24 @@ class Login extends Component {
           </Form.Field>
           <Button primary>Login</Button>
         </Form>
-        {/* {!!usernameError || !!passwordError || !!emailError ? (
-            <Message
-              error
-              header="There was some errors with your submission"
-              list={errorsList}
-            />
-          ) : null} */}
+        {!1 ? (
+          <Message
+            error
+            header="There was some errors with your submission"
+            list={errorsList}
+          />
+        ) : null}
       </Container>
     );
   }
 }
+
+Login.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  mutate: PropTypes.func.isRequired,
+};
 
 const loginMutation = gql`
   mutation($email: String!, $password: String!) {
