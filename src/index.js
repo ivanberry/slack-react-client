@@ -34,8 +34,6 @@ const setLocalTokens = new ApolloLink((operation, forward) =>
       response: { headers },
     } = context;
 
-    console.log('set local tokens');
-
     if (headers) {
       const token = headers.get('x-token');
       const refreshToken = headers.get('x-refresh-token');
