@@ -12,13 +12,13 @@ export default () => (
     <Channels>Channels</Channels>
     <Header>Header</Header>
     <Messages clasName="message">
-      <ul clasName="message-list">
+      <ul className="message-list">
         <li>xxx</li>
         <li>yyy</li>
       </ul>
-      <Input>
-        <input type="text" style={{ width: '100%' }} placeholder="yyyyyyyy" />
-      </Input>
     </Messages>
+    <Input>
+      <input type="text" style={{ width: '100%' }} placeholder="yyyyyyyy" />
+    </Input>
   </AppyLayout>
 );
