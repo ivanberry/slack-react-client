@@ -1,26 +1,14 @@
 import React from 'react';
-import Channels from '../components/Channels';
-import Teams from '../components/Teams';
+
 import Header from '../components/Header';
 import Messages from '../components/Messages';
 import AppyLayout from '../components/AppLayout';
 import SendMessage from '../components/SendMessage';
+import Sidebar from '../container/Sidebar';
 
 export default () => (
   <AppyLayout clasName="app-layout">
-    <Teams teams={[{ id: 1, name: 'T1' }, { id: 2, name: 'T2' }]} />
-    <Channels
-      teamName="Micheal"
-      username="Micheal"
-      channels={[{ id: 1, name: 'General' }, { id: 2, name: 'random' }]}
-      users={[
-        { id: 1, name: 'tab' },
-        { id: 2, name: 'shriting' },
-        { id: 3, name: 'amy' },
-      ]}
-    >
-      Channels
-    </Channels>
+    <Sidebar currentTeamId={15} />
     <Header channelName="general" />
     <Messages clasName="message">
       <ul className="message-list">
