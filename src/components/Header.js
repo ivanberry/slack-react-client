@@ -5,7 +5,6 @@ import { Header } from 'semantic-ui-react';
 const HeaderWrapper = styled.div`
   grid-column: 3;
   grid-row: 1;
-  background-color: pink;
 `;
 
 export default ({ channelName }) => (
