@@ -35,8 +35,8 @@ const TeamListItem = styled.li`
 `;
 
 /*eslint-disable  */
-const team = ({ id, name }) => (
-  <TeamListItem key={`team-${id}`}>{name}</TeamListItem>
+const team = ({ id, letter }) => (
+  <TeamListItem key={`team-${id}`}>{letter}</TeamListItem>
 );
 
 const Teams = ({ teams }) => (
@@ -46,10 +46,12 @@ const Teams = ({ teams }) => (
 );
 
 Teams.propTypes = {
-  teams: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-  }).isRequired,
+  teams: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      letter: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired,
 };
 
 export default Teams;
