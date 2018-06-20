@@ -28,7 +28,7 @@ const SideBarListItem = styled.li`
   }
 `;
 
-const SideBarListHeader = styled.h1`
+const SideBarListHeader = styled.li`
   ${paddingLeft};
 `;
 const PushLeft = styled.div`
