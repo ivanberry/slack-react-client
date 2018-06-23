@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { Redirect } from 'react-router';
 import { graphql } from 'react-apollo';
 
 import { findIndex } from 'lodash';
@@ -21,14 +21,19 @@ const ViewTeam = ({
     return null;
   }
 
-  const teamIdx = !!teamId
-    ? findIndex(allTeams, ['id', parseInt(teamId, 10)])
-    : 0;
+  if (!allTeams.length) {
+    return <Redirect to="/create-team" />;
+  }
 
+  const teamIdInteger = parseInt(teamId, 10);
+  const teamIdx = teamIdInteger
+    ? findIndex(allTeams, ['id', teamIdInteger])
+    : 0;
   const team = allTeams[teamIdx];
 
-  const currentChannelIdx = !!channelId
-    ? findIndex(team.channels, ['id', parseInt(channelId, 10)])
+  const channelIdInteger = parseInt(channelId, 10);
+  const currentChannelIdx = channelIdInteger
+    ? findIndex(team.channels, ['id', channelIdInteger])
     : 0;
   const channel = team.channels[currentChannelIdx];
 
