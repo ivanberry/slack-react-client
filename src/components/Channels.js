@@ -60,6 +60,7 @@ const Channels = ({
   teamId,
   users,
   onAddChannelClick,
+  onInvitePeopleClick,
 }) => (
   <ChannelWrapper>
     <PushLeft>
@@ -79,6 +80,11 @@ const Channels = ({
         <SideBarListHeader>Users</SideBarListHeader>
         {users.map(user)}
       </SideBarList>
+    </div>
+    <div>
+      <a href="#invite-people" onClick={onInvitePeopleClick}>
+        + Invite People
+      </a>
     </div>
   </ChannelWrapper>
 );

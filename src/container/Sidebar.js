@@ -5,10 +5,12 @@ import PropTypes from 'prop-types';
 import Channels from '../components/Channels';
 import Teams from '../components/Teams';
 import AddChannelModal from '../components/AddChannelModal';
+import InvitePeopleModal from '../components/InvitePeopleModal';
 
 class Sidebar extends Component {
   state = {
     openAddChannelModal: false,
+    openInvitePeopleModal: false,
   };
 
   handleAddChannelClick = () => {
@@ -23,8 +25,17 @@ class Sidebar extends Component {
     });
   };
 
+  handleInvitePeopleClick = () => {
+    this.setState({ openInvitePeopleModal: true });
+  };
+
+  handleCloseInviteClick = () => {
+    this.setState({ openInvitePeopleModal: false });
+  };
+
   render() {
     const { teams, team } = this.props;
+    const { openInvitePeopleModal, openAddChannelModal } = this.state;
 
     let username = '';
     try {
@@ -49,12 +60,21 @@ class Sidebar extends Component {
           { id: 3, name: 'amy' },
         ]}
         onAddChannelClick={this.handleAddChannelClick}
+        onInvitePeopleClick={this.handleInvitePeopleClick}
       />,
+
       <AddChannelModal
         teamId={team.id}
         onClose={this.handleCloseChannelClick}
-        open={this.state.openAddChannelModal}
+        open={openAddChannelModal}
         key="sidebar-add-channel"
+      />,
+
+      <InvitePeopleModal
+        teamId={team.id}
+        onClose={this.handleCloseInviteClick}
+        open={openInvitePeopleModal}
+        key="invite-people-channel"
       />,
     ];
   }
@@ -73,4 +93,4 @@ Sidebar.propTypes = {
   }).isRequired,
 };
 
-export default Sidebar; // why shoud we use curry?
+export default Sidebar;

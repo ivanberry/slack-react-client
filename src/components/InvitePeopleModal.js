@@ -1,13 +1,11 @@
 import React from 'react';
 import { withFormik } from 'formik';
-import { findIndex } from 'lodash';
 import { Modal, Input, Button, Form } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import { compose, graphql } from 'react-apollo';
-import { allTeamsQuery } from '../graphql/team';
 
-const AddChannelModal = ({
+const InvitePeopleModal = ({
   open,
   onClose,
   values,
@@ -17,16 +15,16 @@ const AddChannelModal = ({
   isSubmitting,
 }) => (
   <Modal open={open} onClose={onClose}>
-    <Modal.Header>Create a new channel?</Modal.Header>
+    <Modal.Header>Invite Friend</Modal.Header>
     <Modal.Content>
       <Form>
         <Form.Field>
           <Input
-            value={values.name}
-            name="name"
+            value={values.email}
+            name="email"
             onChange={handleChange}
             onBlur={handleBlur}
-            placeholder="Channel name..."
+            placeholder="User's email"
             fluid
           />
         </Form.Field>
@@ -43,11 +41,11 @@ const AddChannelModal = ({
   </Modal>
 );
 
-AddChannelModal.propTypes = {
+InvitePeopleModal.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   values: PropTypes.shape({
-    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
   }).isRequired,
   handleBlur: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
@@ -55,43 +53,31 @@ AddChannelModal.propTypes = {
   isSubmitting: PropTypes.bool.isRequired,
 };
 
-const createChannelMutation = gql`
-  mutation($teamId: Int!, $name: String!) {
-    createChannel(teamId: $teamId, name: $name) {
+const invitePeopleMutation = gql`
+  mutation($email: String!, $teamId: Int!) {
+    addTeamMember(email: $email, teamId: $teamId) {
       ok
-      channel {
-        id
-        name
+      errors {
+        path
+        message
       }
     }
   }
 `;
 
 export default compose(
-  graphql(createChannelMutation),
+  graphql(invitePeopleMutation),
   withFormik({
-    mapPropsToValues: () => ({ name: '' }),
+    mapPropsToValues: () => ({ email: '' }),
     handleSubmit: async (
       values,
       { props: { teamId, mutate, onClose }, setSubmitting },
     ) => {
       await mutate({
-        variables: { teamId, name: values.name },
-        update: (store, { data: { createChannel } }) => {
-          const { ok, channel } = createChannel;
-          if (!ok) return;
-          const data = store.readQuery({ query: allTeamsQuery });
-          const { allTeams } = data;
-          const teamIdx = findIndex(allTeams, (team) => team.id === teamId);
-          allTeams[teamIdx].channels.push(channel);
-          store.writeQuery({
-            query: allTeamsQuery,
-            data,
-          });
-        },
+        variables: { teamId, email: values.email },
       });
       onClose();
       setSubmitting(false);
     },
   }),
-)(AddChannelModal);
+)(InvitePeopleModal);
