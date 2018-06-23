@@ -70,7 +70,7 @@ class CreateTeam extends Component {
       <Container fluid>
         <Header as="h2">Create a team</Header>
         <Form onSubmit={onSubmit}>
-          <Form.Field>
+          <Form.Field error={!!nameError}>
             <label htmlFor="name">Create a team</label>
             <Input
               id="name"
