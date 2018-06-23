@@ -1,21 +1,68 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
+import { graphql } from 'react-apollo';
+
+import { findIndex } from 'lodash';
 import Header from '../components/Header';
 import Messages from '../components/Messages';
 import AppyLayout from '../components/AppLayout';
 import SendMessage from '../components/SendMessage';
 import Sidebar from '../container/Sidebar';
+import { allTeamsQuery } from '../graphql/team';
 
-export default () => (
-  <AppyLayout clasName="app-layout">
-    <Sidebar currentTeamId={15} />
-    <Header channelName="general" />
-    <Messages clasName="message">
-      <ul className="message-list">
-        <li>xxx</li>
-        <li>yyy</li>
-      </ul>
-    </Messages>
-    <SendMessage channelName="general" />
-  </AppyLayout>
-);
+const ViewTeam = ({
+  data: { allTeams, loading },
+  match: {
+    params: { teamId, channelId },
+  },
+}) => {
+  if (loading) {
+    return null;
+  }
+
+  const teamIdx = !!teamId
+    ? findIndex(allTeams, ['id', parseInt(teamId, 10)])
+    : 0;
+
+  const team = allTeams[teamIdx];
+
+  const currentChannelIdx = !!channelId
+    ? findIndex(team.channels, ['id', parseInt(channelId, 10)])
+    : 0;
+  const channel = team.channels[currentChannelIdx];
+
+  return (
+    <AppyLayout clasName="app-layout">
+      <Sidebar
+        teams={allTeams.map((t) => ({
+          id: t.id,
+          letter: t.name.charAt(0).toUpperCase(),
+        }))}
+        team={team}
+      />
+      <Header channelName={channel.name} />
+      <Messages clasName="message">
+        <ul className="message-list">
+          <li>xxx</li>
+          <li>yyy</li>
+        </ul>
+      </Messages>
+      <SendMessage channelName={channel.name} />
+    </AppyLayout>
+  );
+};
+
+ViewTeam.propTypes = {
+  data: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    allTeams: PropTypes.array,
+  }).isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      teamId: PropTypes.string,
+    }).isRequired,
+  }).isRequired,
+};
+
+export default graphql(allTeamsQuery)(ViewTeam); // why shoud we use curry?

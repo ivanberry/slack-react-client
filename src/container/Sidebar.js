@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
 import decode from 'jwt-decode';
-import { findIndex } from 'lodash';
+import PropTypes from 'prop-types';
 
 import Channels from '../components/Channels';
 import Teams from '../components/Teams';
@@ -26,14 +24,8 @@ class Sidebar extends Component {
   };
 
   render() {
-    const {
-      data: { allTeams, loading },
-      currentTeamId,
-    } = this.props;
+    const { teams, team } = this.props;
 
-    if (loading) return null;
-    const teamIdx = findIndex(allTeams, ['id', currentTeamId]);
-    const team = allTeams[teamIdx];
     let username = '';
     try {
       const token = localStorage.getItem('token');
@@ -44,16 +36,11 @@ class Sidebar extends Component {
     } catch (error) {}
 
     return [
-      <Teams
-        key="team-sidebar"
-        teams={allTeams.map((t) => ({
-          id: t.id,
-          letter: t.name.charAt(0).toUpperCase(),
-        }))}
-      />,
+      <Teams key="team-sidebar" teams={teams} />,
       <Channels
         key="channel-sidebar"
         teamName={team.name}
+        teamId={team.id}
         username={username}
         channels={team.channels}
         users={[
@@ -64,7 +51,7 @@ class Sidebar extends Component {
         onAddChannelClick={this.handleAddChannelClick}
       />,
       <AddChannelModal
-        teamId={currentTeamId}
+        teamId={team.id}
         onClose={this.handleCloseChannelClick}
         open={this.state.openAddChannelModal}
         key="sidebar-add-channel"
@@ -73,17 +60,17 @@ class Sidebar extends Component {
   }
 }
 
-const allTeamsQuery = gql`
-  {
-    allTeams {
-      id
-      name
-      channels {
-        id
-        name
-      }
-    }
-  }
-`;
+Sidebar.propTypes = {
+  teams: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      letter: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired,
+  team: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+  }).isRequired,
+};
 
-export default graphql(allTeamsQuery)(Sidebar); // why shoud we use curry?
+export default Sidebar; // why shoud we use curry?
