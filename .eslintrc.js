@@ -3,6 +3,7 @@ module.exports = {
   rules: {
     'react/jsx-filename-extension': 0,
     'jsx-a11y/label-has-for': 0,
+    'no-extra-boolean-cast': 0,
   },
   globals: {
     document: 1,
