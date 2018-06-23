@@ -4,6 +4,7 @@ import { Modal, Input, Button, Form } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import { compose, graphql } from 'react-apollo';
+import normalizeErrors from '../normalizeErrors';
 
 const InvitePeopleModal = ({
   open,
@@ -13,6 +14,8 @@ const InvitePeopleModal = ({
   handleBlur,
   handleSubmit,
   isSubmitting,
+  touched,
+  errors,
 }) => (
   <Modal open={open} onClose={onClose}>
     <Modal.Header>Invite Friend</Modal.Header>
@@ -28,6 +31,7 @@ const InvitePeopleModal = ({
             fluid
           />
         </Form.Field>
+        {touched.email && errors.email ? errors.email[0] : null}
         <Form.Group widths="equal">
           <Button disabled={isSubmitting} onClick={onClose} fluid>
             Cancel
@@ -51,6 +55,12 @@ InvitePeopleModal.propTypes = {
   handleChange: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   isSubmitting: PropTypes.bool.isRequired,
+  touched: PropTypes.shape({
+    email: PropTypes.string.isRequired,
+  }).isRequired,
+  errors: PropTypes.shape({
+    email: PropTypes.string,
+  }).isRequired,
 };
 
 const invitePeopleMutation = gql`
@@ -71,12 +81,18 @@ export default compose(
     mapPropsToValues: () => ({ email: '' }),
     handleSubmit: async (
       values,
-      { props: { teamId, mutate, onClose }, setSubmitting },
+      { props: { teamId, mutate, onClose }, setSubmitting, setErrors },
     ) => {
-      await mutate({
+      const response = await mutate({
         variables: { teamId, email: values.email },
       });
-      onClose();
+      const { ok, errors } = response.data.addTeamMember;
+
+      if (ok) {
+        onClose();
+      } else {
+        setErrors(normalizeErrors(errors));
+      }
       setSubmitting(false);
     },
   }),
