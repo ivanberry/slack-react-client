@@ -56,7 +56,7 @@ InvitePeopleModal.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   isSubmitting: PropTypes.bool.isRequired,
   touched: PropTypes.shape({
-    email: PropTypes.string.isRequired,
+    email: PropTypes.string,
   }).isRequired,
   errors: PropTypes.shape({
     email: PropTypes.string,
