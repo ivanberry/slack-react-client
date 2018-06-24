@@ -13,24 +13,18 @@ class Sidebar extends Component {
     openInvitePeopleModal: false,
   };
 
-  handleAddChannelClick = () => {
-    this.setState({
-      openAddChannelModal: true,
-    });
+  toggleAddChannelModal = (e) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      openAddChannelModal: !state.openAddChannelModal,
+    }));
   };
 
-  handleCloseChannelClick = () => {
-    this.setState({
-      openAddChannelModal: false,
-    });
-  };
-
-  handleInvitePeopleClick = () => {
-    this.setState({ openInvitePeopleModal: true });
-  };
-
-  handleCloseInviteClick = () => {
-    this.setState({ openInvitePeopleModal: false });
+  toggleInvitePeopleModal = (e) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      openInvitePeopleModal: !state.openInvitePeopleModal,
+    }));
   };
 
   render() {
@@ -59,20 +53,20 @@ class Sidebar extends Component {
           { id: 2, name: 'shriting' },
           { id: 3, name: 'amy' },
         ]}
-        onAddChannelClick={this.handleAddChannelClick}
-        onInvitePeopleClick={this.handleInvitePeopleClick}
+        onAddChannelClick={this.toggleAddChannelModal}
+        onInvitePeopleClick={this.toggleInvitePeopleModal}
       />,
 
       <AddChannelModal
         teamId={team.id}
-        onClose={this.handleCloseChannelClick}
+        onClose={this.toggleAddChannelModal}
         open={openAddChannelModal}
         key="sidebar-add-channel"
       />,
 
       <InvitePeopleModal
         teamId={team.id}
-        onClose={this.handleCloseInviteClick}
+        onClose={this.toggleInvitePeopleModal}
         open={openInvitePeopleModal}
         key="invite-people-channel"
       />,
