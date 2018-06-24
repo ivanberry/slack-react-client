@@ -14,14 +14,18 @@ class Sidebar extends Component {
   };
 
   toggleAddChannelModal = (e) => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     this.setState((state) => ({
       openAddChannelModal: !state.openAddChannelModal,
     }));
   };
 
   toggleInvitePeopleModal = (e) => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     this.setState((state) => ({
       openInvitePeopleModal: !state.openInvitePeopleModal,
     }));
