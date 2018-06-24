@@ -12,7 +12,7 @@ import Sidebar from '../container/Sidebar';
 import { allTeamsQuery } from '../graphql/team';
 
 const ViewTeam = ({
-  data: { allTeams, loading },
+  data: { allTeams, inviteTeams, loading },
   match: {
     params: { teamId, channelId },
   },
@@ -21,15 +21,15 @@ const ViewTeam = ({
     return null;
   }
 
-  if (!allTeams.length) {
+  const teams = [...allTeams, ...inviteTeams];
+
+  if (!teams.length) {
     return <Redirect to="/create-team" />;
   }
 
   const teamIdInteger = parseInt(teamId, 10);
-  const teamIdx = teamIdInteger
-    ? findIndex(allTeams, ['id', teamIdInteger])
-    : 0;
-  const team = allTeams[teamIdx];
+  const teamIdx = teamIdInteger ? findIndex(teams, ['id', teamIdInteger]) : 0;
+  const team = teams[teamIdx];
 
   const channelIdInteger = parseInt(channelId, 10);
   const currentChannelIdx = channelIdInteger
@@ -40,7 +40,7 @@ const ViewTeam = ({
   return (
     <AppyLayout clasName="app-layout">
       <Sidebar
-        teams={allTeams.map((t) => ({
+        teams={teams.map((t) => ({
           id: t.id,
           letter: t.name.charAt(0).toUpperCase(),
         }))}
@@ -61,7 +61,7 @@ const ViewTeam = ({
 ViewTeam.propTypes = {
   data: PropTypes.shape({
     loading: PropTypes.bool.isRequired,
-    allTeams: PropTypes.array,
+    teams: PropTypes.array,
   }).isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
