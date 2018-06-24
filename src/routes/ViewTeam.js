@@ -5,7 +5,7 @@ import { graphql } from 'react-apollo';
 
 import { findIndex } from 'lodash';
 import Header from '../components/Header';
-import Messages from '../components/Messages';
+import MessageContainer from '../container/MessageContainer';
 import AppyLayout from '../components/AppLayout';
 import SendMessage from '../components/SendMessage';
 import Sidebar from '../container/Sidebar';
@@ -47,13 +47,8 @@ const ViewTeam = ({
         team={team}
       />
       <Header channelName={channel.name} />
-      <Messages clasName="message">
-        <ul className="message-list">
-          <li>xxx</li>
-          <li>yyy</li>
-        </ul>
-      </Messages>
-      <SendMessage channelName={channel.name} />
+      <MessageContainer />
+      <SendMessage channelId={channel.id} channelName={channel.name} />
     </AppyLayout>
   );
 };
