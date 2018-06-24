@@ -36,18 +36,21 @@ class Sidebar extends Component {
     const { openInvitePeopleModal, openAddChannelModal } = this.state;
 
     let username = '';
+    let isOwner = false;
     try {
       const token = localStorage.getItem('token');
       const { user } = decode(token);
 
       // eslint-disable-next-line prefer-destructuring
       username = user.username;
+      isOwner = team.owner === user.id;
     } catch (error) {}
 
     return [
       <Teams key="team-sidebar" teams={teams} />,
       <Channels
         key="channel-sidebar"
+        isOwner={isOwner}
         teamName={team.name}
         teamId={team.id}
         username={username}
