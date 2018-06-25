@@ -2,11 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { Input } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
-import { compose, withFormik } from 'formik';
+import { withFormik } from 'formik';
 import gql from 'graphql-tag';
-import { graphql } from 'react-apollo';
+import { compose, graphql } from 'react-apollo';
 
 const SendMessageWrapper = styled.div`
+  margin: 20px;
   grid-column: 3;
   grid-row: 3;
   background-color: yellow;
@@ -29,7 +30,7 @@ const SendMessage = ({
       onChange={handleChange}
       onBlur={handleBlur}
       onKeyDown={(e) => {
-        if (e.keyCode === 13 && isSubmitting) {
+        if (e.keyCode === 13 && !isSubmitting) {
           handleSubmit(e);
         }
       }}
@@ -41,7 +42,11 @@ SendMessage.propTypes = {
   channelName: PropTypes.string.isRequired,
 };
 
-const createMessageMutaion = gql``;
+const createMessageMutaion = gql`
+  mutation($channelId: Int!, $text: String!) {
+    createMessage(channelId: $channelId, text: $text)
+  }
+`;
 
 export default compose(
   graphql(createMessageMutaion),
@@ -49,7 +54,7 @@ export default compose(
     mapPropsToValues: () => ({ message: '' }),
     handleSubmit: async (
       values,
-      { props: { channelId, mutate }, setSubmitting },
+      { props: { channelId, mutate }, setSubmitting, resetForm },
     ) => {
       if (!values.message && !values.message.trim()) {
         setSubmitting(false);
@@ -58,7 +63,7 @@ export default compose(
       await mutate({
         variables: { channelId, text: values.message },
       });
-      setSubmitting(false);
+      resetForm(false);
     },
   }),
 )(SendMessage);

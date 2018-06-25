@@ -47,7 +47,7 @@ const ViewTeam = ({
         team={team}
       />
       <Header channelName={channel.name} />
-      <MessageContainer />
+      <MessageContainer channelId={channel.id} />
       <SendMessage channelId={channel.id} channelName={channel.name} />
     </AppyLayout>
   );
