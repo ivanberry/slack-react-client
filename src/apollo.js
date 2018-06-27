@@ -3,7 +3,7 @@ import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { ApolloLink, concat, split } from 'apollo-link';
 import { WebSocketLink } from 'apollo-link-ws';
-import { getMainDefinition } from 'apollo-utilities';
+import { getMainDefinition, toIdValue } from 'apollo-utilities';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
 const httpLink = createHttpLink({
@@ -61,6 +61,20 @@ const link = split(
   wsLink,
   concat(authLink, httpLink, setLocalTokens),
 );
+
+const cacheOpts = {
+  cacheRedirects: {
+    Query: {
+      messages: (_, args) =>
+        toIdValue(
+          cacheOpts.config.dataIdFromObject({
+            __typename: 'Messages',
+            id: args.id,
+          }),
+        ),
+    },
+  },
+};
 
 export default new ApolloClient({
   link,
