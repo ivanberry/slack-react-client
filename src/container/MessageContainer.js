@@ -32,14 +32,10 @@ class MessageContainer extends React.Component {
           return prev;
         }
 
-        const updateMessages = {
+        return {
           ...prev,
           messages: [...prev.messages, subscriptionData.data.newChannelMessage],
         };
-
-        console.log(subscriptionData);
-
-        return updateMessages;
       },
     });
   }
