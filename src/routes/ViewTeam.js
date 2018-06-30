@@ -2,17 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router';
 import { graphql } from 'react-apollo';
-
 import { findIndex } from 'lodash';
+
 import Header from '../components/Header';
 import MessageContainer from '../container/MessageContainer';
 import AppyLayout from '../components/AppLayout';
 import SendMessage from '../components/SendMessage';
 import Sidebar from '../container/Sidebar';
-import { allTeamsQuery } from '../graphql/team';
+import { meQuery } from '../graphql/team';
 
 const ViewTeam = ({
-  data: { allTeams, inviteTeams, loading },
+  data: { loading, me },
   match: {
     params: { teamId, channelId },
   },
@@ -21,7 +21,7 @@ const ViewTeam = ({
     return null;
   }
 
-  const teams = [...allTeams, ...inviteTeams];
+  const { teams } = me;
 
   if (!teams.length) {
     return <Redirect to="/create-team" />;
@@ -65,4 +65,4 @@ ViewTeam.propTypes = {
   }).isRequired,
 };
 
-export default graphql(allTeamsQuery)(ViewTeam); // why shoud we use curry?
+export default graphql(meQuery)(ViewTeam); // why shoud we use curry?

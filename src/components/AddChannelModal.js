@@ -5,7 +5,7 @@ import { Modal, Input, Button, Form } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import { compose, graphql } from 'react-apollo';
-import { allTeamsQuery } from '../graphql/team';
+import { meQuery } from '../graphql/team';
 
 const AddChannelModal = ({
   open,
@@ -80,12 +80,12 @@ export default compose(
         update: (store, { data: { createChannel } }) => {
           const { ok, channel } = createChannel;
           if (!ok) return;
-          const data = store.readQuery({ query: allTeamsQuery });
-          const { allTeams } = data;
-          const teamIdx = findIndex(allTeams, (team) => team.id === teamId);
-          allTeams[teamIdx].channels.push(channel);
+          const data = store.readQuery({ query: meQuery });
+          const { me } = data;
+          const teamIdx = findIndex(me.teams, (team) => team.id === teamId);
+          me.teams[teamIdx].channels.push(channel);
           store.writeQuery({
-            query: allTeamsQuery,
+            query: meQuery,
             data,
           });
         },
